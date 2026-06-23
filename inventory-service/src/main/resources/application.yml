@@ -1,0 +1,68 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: inventory-service
+# Configuración de Postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/projects
+    username: postgres
+    password: t0m03
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#Configuracion de eventos
+  cloud:
+    function:
+      definition: reduceStock
+    stream:
+      bindings:
+        reduceStock-in-0:
+          destination: order-placed-topic
+          group: inventory-consumer-group
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
+          configuration:
+            auto.offset.reset: earliest
+
+# Configuración de Actuator (para monitoreo)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,prometheus" # Exponemos métricas para Prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+# Configuración de Resilience4j (Para el Chaos Engineering)
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventoryService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
+logging:
+  level:
+    org.springframework.cloud.stream: DEBUG
+    org.springframework.kafka: DEBUG
+    com.ecommerce.inventory_service: DEBUG

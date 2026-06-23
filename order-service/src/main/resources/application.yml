@@ -1,0 +1,43 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: order-service
+  # Configuración de Postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/projects
+    username: postgres
+    password: t0m03
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+# Configuración de Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: always
+  # Cconfiguracion de eventos (Spring Cloud Stream)
+  cloud:
+    stream:
+      bindings:
+        orderPlaced-out-0:
+          destination: order-placed-topic
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
+logging:
+  level:
+    com.ecommerce.order_service: DEBUG
+    org.springframework.cloud.stream: INFO

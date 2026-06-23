@@ -1,0 +1,21 @@
+# carpetas de compilación de Java / Maven
+**/target/
+**.class
+**.jar
+**.war
+
+# Dependencias de Frontend
+**/node_modules/
+**/dist/
+**/.eslintcache
+
+# Configuraciones de IDEs (IntelliJ, VS Code)
+**/.idea/
+**/.vscode/
+**.swn
+**.swo
+**.iml
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

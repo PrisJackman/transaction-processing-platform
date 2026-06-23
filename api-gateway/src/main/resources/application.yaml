@@ -1,0 +1,95 @@
+spring:
+  cloud:
+    gateway:
+      # Configuración de CORS para permitir al Front conectarse
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods: [ GET, POST, PUT, DELETE, OPTIONS ]
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        # Ruta para obtener todos los productos (NUEVA)
+        - id: inventory-service-all
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/inventory
+            - Method=GET
+          filters:
+            - StripPrefix=0
+        # Ruta para productos individuales
+        - id: inventory-service-product
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/inventory/{id}
+            - Method=GET
+          filters:
+            - StripPrefix=1
+        # Ruta para check stock
+        - id: inventory-service-check
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/inventory/{id}/check
+          filters:
+            - StripPrefix=1
+        # Ruta para productos del Inventory Service
+        - id: inventory-service-products
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/inventory/products
+          filters:
+            - StripPrefix=1  # Elimina /api/inventory, queda /products
+
+        # Ruta para health check del Inventory Service
+        - id: inventory-service-health
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/inventory/actuator/health
+          filters:
+            - StripPrefix=2  # Elimina /api/inventory, queda /actuator/health
+
+        # Ruta para crear órdenes en Order Service
+        - id: order-service-orders
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/orders
+            - Method=POST
+          filters:
+            - StripPrefix=1  # Elimina /api/orders, queda vacío o / según corresponda
+
+        # Ruta para health check del Order Service
+        - id: order-service-health
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/orders/actuator/health
+          filters:
+            - StripPrefix=2  # Elimina /api/orders, queda /actuator/health
+
+        # Ruta genérica para el Gateway (opcional)
+        - id: gateway-health
+          uri: http://localhost:8080
+          predicates:
+            - Path=/actuator/health
+# Configuración de Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health"
+  endpoint:
+    health:
+      show-details: always
+# Configuración de Resilience4j
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventoryServiceCB:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+kind: Application
