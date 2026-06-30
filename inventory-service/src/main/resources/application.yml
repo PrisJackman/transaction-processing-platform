@@ -3,13 +3,13 @@ server:
 spring:
   application:
     name: inventory-service
-# Configuración de Postgres
+  # Configuración de Postgres
   datasource:
     url: jdbc:postgresql://localhost:5432/projects
     username: postgres
     password: t0m03
     driver-class-name: org.postgresql.Driver
-  
+
   # JPA / Hibernate
   jpa:
     hibernate:
@@ -19,7 +19,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-#Configuracion de eventos
+  #Configuracion de eventos
   cloud:
     function:
       definition: reduceStock
@@ -30,10 +30,13 @@ spring:
           group: inventory-consumer-group
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: pkc-619z3.us-east1.gcp.confluent.cloud:9092
           auto-create-topics: true
           configuration:
             auto.offset.reset: earliest
+            security.protocol: SASL_SSL
+            sasl.mechanism: PLAIN
+            sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="FIMMW65ZNRONMZZ2" password="cflt6PJ/pCBMdjHHDJrCzfjk7KgNGRo4+AVLdlW/JXRZNH8r7b/ajRcQbmutvGQw";'
 
 # Configuración de Actuator (para monitoreo)
 management:

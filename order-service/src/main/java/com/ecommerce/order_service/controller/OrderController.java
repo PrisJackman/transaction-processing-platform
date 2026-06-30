@@ -21,7 +21,7 @@ public class OrderController {
     private final OrderService orderService;
     private final ModelMapper modelMapper;
 
-    public OrderController(OrderRepository orderRepository, OrderService orderService, StreamBridge streamBridge, ModelMapper modelMapper) {
+    public OrderController(OrderService orderService, ModelMapper modelMapper) {
         this.orderService = orderService;
         this.modelMapper = modelMapper;
     }

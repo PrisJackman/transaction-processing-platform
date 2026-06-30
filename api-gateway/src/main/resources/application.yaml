@@ -56,7 +56,7 @@ spring:
             - Path=/api/orders
             - Method=POST
           filters:
-            - StripPrefix=1  # Elimina /api/orders, queda vacío o / según corresponda
+            - StripPrefix=0  # Elimina /api/orders, queda vacío o / según corresponda
 
         # Ruta para health check del Order Service
         - id: order-service-health
@@ -76,7 +76,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health"
+        include: "health,info,gateway"
   endpoint:
     health:
       show-details: always

@@ -24,8 +24,9 @@ public class GlobalExceptionHandler {
         log.warn("Resource not found: {}", ex.getMessage());
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
+        body.put("message", "Error interno: " + ex.getMessage());
         body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error_type", ex.getClass().getSimpleName());
         return body;
     }
 
@@ -36,7 +37,7 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error", ex);
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("message", "Error interno en el servicio");
+        body.put("message", "Error interno en el servicio " + ex.getMessage());
         body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return body;
     }

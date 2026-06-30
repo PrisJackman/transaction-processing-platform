@@ -18,6 +18,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Cconfiguracion de eventos (Spring Cloud Stream)
+  cloud:
+    stream:
+      bindings:
+        orderPlaced-out-0:
+          destination: order-placed-topic
+      kafka:
+        binder:
+          brokers: pkc-619z3.us-east1.gcp.confluent.cloud:9092
+          configuration:
+            security.protocol: SASL_SSL
+            sasl.mechanism: PLAIN
+            sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="FIMMW65ZNRONMZZ2" password="cflt6PJ/pCBMdjHHDJrCzfjk7KgNGRo4+AVLdlW/JXRZNH8r7b/ajRcQbmutvGQw";'
+
 # Configuración de Actuator
 management:
   endpoints:
@@ -27,17 +42,9 @@ management:
   endpoint:
     health:
       show-details: always
-  # Cconfiguracion de eventos (Spring Cloud Stream)
-  cloud:
-    stream:
-      bindings:
-        orderPlaced-out-0:
-          destination: order-placed-topic
-      kafka:
-        binder:
-          brokers: localhost:9092
-          auto-create-topics: true
+
 logging:
   level:
     com.ecommerce.order_service: DEBUG
-    org.springframework.cloud.stream: INFO
+    org.springframework.cloud.stream: DEBUG
+    org.springframework.kafka: DEBUG
