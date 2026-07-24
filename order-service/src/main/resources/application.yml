@@ -23,8 +23,13 @@ spring:
   cloud:
     stream:
       bindings:
+        # Canal de salida
         orderPlaced-out-0:
           destination: order-placed-topic
+        # Canal de entrada
+        processInventoryResponse-in-0:
+          destination: inventory-response-topic
+          group: order-consumer-group
       kafka:
         binder:
           brokers: pkc-619z3.us-east1.gcp.confluent.cloud:9092
