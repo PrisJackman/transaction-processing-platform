@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderPlacedEvent implements Serializable {
+    private Long orderId;
     private Long productId;
     private Integer quantity;
 }

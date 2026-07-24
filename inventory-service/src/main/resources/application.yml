@@ -25,9 +25,13 @@ spring:
       definition: reduceStock
     stream:
       bindings:
+        #canal de entrada
         reduceStock-in-0:
           destination: order-placed-topic
           group: inventory-consumer-group
+        #canal de salida
+        reduceStock-out-0:
+          destination: inventory-response-topic
       kafka:
         binder:
           brokers: pkc-619z3.us-east1.gcp.confluent.cloud:9092
